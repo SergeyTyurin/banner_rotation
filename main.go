@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/configs"
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
-	"github.com/SergeyTyurin/banner_rotation/internal/message_broker"
-	"github.com/SergeyTyurin/banner_rotation/internal/router"
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/database"
+	"github.com/SergeyTyurin/banner_rotation/message_broker"
+	"github.com/SergeyTyurin/banner_rotation/router"
 )
 
 func main() {
@@ -47,8 +47,7 @@ func main() {
 		Handler: muxRouter.Mux(),
 	}
 	defer server.Close()
-
-	fmt.Println("Слушаем порт")
+	log.Println("listening...")
 	// Прослушивание сервера
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)

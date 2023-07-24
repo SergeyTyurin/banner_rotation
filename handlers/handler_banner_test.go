@@ -8,13 +8,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/database"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBadRequestBanner(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -66,7 +68,7 @@ func TestBadRequestBanner(t *testing.T) {
 
 func TestNonExistsBanner(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 

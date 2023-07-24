@@ -1,11 +1,13 @@
 app:
-  host: 127.0.0.1
+  host: 0.0.0.0
   port: 8081
 database:
-  host: 127.0.0.1
+  host: postgres
   port: 5432
   name: "rotation"
+  url: postgres://{user}:{password}@{host}:{port}/{dbname}?sslmode=disable
 message_broker:
-  host: 127.0.0.1
+  host: amqp
   port: 5672
+  url: amqp://{user}:{password}@{host}/
 

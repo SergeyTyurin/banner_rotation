@@ -10,11 +10,13 @@ import (
 type MessageBrokerConfig interface {
 	Host() string
 	Port() int
+	URL() string
 }
 
 type messageBrokerImpl struct {
 	HostBR string `yaml:"host"`
 	PortBR int    `yaml:"port"`
+	UrlBR  string `yaml:"url"`
 }
 
 func GetMessageBrokerConfig(filename string) (MessageBrokerConfig, error) {
@@ -45,4 +47,8 @@ func (c *messageBrokerImpl) Host() string {
 
 func (c *messageBrokerImpl) Port() int {
 	return c.PortBR
+}
+
+func (c *messageBrokerImpl) URL() string {
+	return c.UrlBR
 }

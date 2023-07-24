@@ -4,12 +4,14 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCreateSlot(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	d.db.Exec(`TRUNCATE TABLE "Slots" RESTART IDENTITY CASCADE`)
@@ -26,7 +28,7 @@ func TestCreateSlot(t *testing.T) {
 
 func TestGetSlots(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -71,7 +73,7 @@ func TestGetSlots(t *testing.T) {
 
 func TestUpdateSlot(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -97,7 +99,7 @@ func TestUpdateSlot(t *testing.T) {
 
 func TestDeleteSlot(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 

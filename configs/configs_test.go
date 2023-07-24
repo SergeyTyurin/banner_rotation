@@ -7,19 +7,19 @@ import (
 )
 
 func TestCreateDBConfig(t *testing.T) {
-	conn, err := GetDBConnectionConfig("../../config/connection_config.yaml")
+	conn, err := GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	require.Nil(t, err)
 	require.NotNil(t, conn)
 }
 
 func TestCreateAppConfig(t *testing.T) {
-	conn, err := GetAppSettings("../../config/connection_config.yaml")
+	conn, err := GetAppSettings("../config/test/test_connection_config.yaml")
 	require.Nil(t, err)
 	require.NotNil(t, conn)
 }
 
 func TestCreateMsgBrokerConfig(t *testing.T) {
-	conn, err := GetMessageBrokerConfig("../../config/connection_config.yaml")
+	conn, err := GetMessageBrokerConfig("../config/test/test_connection_config.yaml")
 	require.Nil(t, err)
 	require.NotNil(t, conn)
 }

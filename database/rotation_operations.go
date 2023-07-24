@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+
+	"github.com/SergeyTyurin/banner_rotation/banner_selector"
 )
 
 func checkEntityInRotationTx(tx *sql.Tx, bannerId, slotId, groupId int) (bool, error) {

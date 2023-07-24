@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,7 +27,7 @@ func setTestData(d databaseImpl) {
 
 func TestAddToRotation(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	setTestData(d)
@@ -69,7 +71,7 @@ func TestAddToRotation(t *testing.T) {
 
 func TestDeleteFromRotation(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	setTestData(d)
@@ -101,7 +103,7 @@ func TestDeleteFromRotation(t *testing.T) {
 
 func TestSelectFromRotation(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	setTestData(d)
@@ -135,7 +137,7 @@ func TestSelectFromRotation(t *testing.T) {
 
 func TestRegisterTransition(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	setTestData(d)

@@ -4,12 +4,14 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCreateBanner(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 	d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
@@ -26,7 +28,7 @@ func TestCreateBanner(t *testing.T) {
 
 func TestGetBanners(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -71,7 +73,7 @@ func TestGetBanners(t *testing.T) {
 
 func TestUpdateBanner(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -98,7 +100,7 @@ func TestUpdateBanner(t *testing.T) {
 
 func TestDeleteBanner(t *testing.T) {
 	d := databaseImpl{nil}
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 

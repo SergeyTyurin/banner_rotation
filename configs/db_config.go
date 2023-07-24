@@ -11,12 +11,14 @@ type DBConnectionConfig interface {
 	Host() string
 	Port() int
 	DatabaseName() string
+	URL() string
 }
 
 type dbConnectionImpl struct {
 	HostDB string `yaml:"host"`
 	PortDB int    `yaml:"port"`
 	NameDB string `yaml:"name"`
+	UrlDB  string `yaml:"url"`
 }
 
 func GetDBConnectionConfig(filename string) (DBConnectionConfig, error) {
@@ -51,4 +53,8 @@ func (c *dbConnectionImpl) Port() int {
 
 func (c *dbConnectionImpl) DatabaseName() string {
 	return c.NameDB
+}
+
+func (c *dbConnectionImpl) URL() string {
+	return c.UrlDB
 }

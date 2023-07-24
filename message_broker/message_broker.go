@@ -2,9 +2,10 @@ package message_broker
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/SergeyTyurin/banner_rotation/configs"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -31,13 +32,13 @@ func NewBroker() MessageBroker {
 }
 
 func (m *messageBrokerImpl) Connect(config configs.MessageBrokerConfig) (func(), error) {
-	connStr := fmt.Sprintf("amqp://%s:%s@%s:%d/",
-		os.Getenv("MQ_USER"),
-		os.Getenv("MQ_PASSWORD"),
-		config.Host(),
-		config.Port())
+	url := config.URL()
+	url = strings.Replace(url, "{host}", config.Host(), -1)
+	url = strings.Replace(url, "{port}", strconv.Itoa(config.Port()), -1)
+	url = strings.Replace(url, "{user}", os.Getenv("MQ_USER"), -1)
+	url = strings.Replace(url, "{password}", os.Getenv("MQ_PASSWORD"), -1)
 
-	conn, err := amqp.Dial(connStr)
+	conn, err := amqp.Dial(url)
 	if err != nil {
 		return nil, err
 	}

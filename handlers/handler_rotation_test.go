@@ -6,12 +6,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/database"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBadRequestRotaton(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -70,7 +72,7 @@ func TestBadRequestRotaton(t *testing.T) {
 
 func TestNonExistsRotaton(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 

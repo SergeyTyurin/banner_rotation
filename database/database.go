@@ -3,9 +3,11 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
+	"github.com/SergeyTyurin/banner_rotation/configs"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -54,16 +56,14 @@ func (di *databaseImpl) Connect(config configs.DBConnectionConfig) (func() error
 		return nil, ErrNilConfig
 	}
 	var connectionError error
+	url := config.URL()
+	url = strings.Replace(url, "{host}", config.Host(), -1)
+	url = strings.Replace(url, "{port}", strconv.Itoa(config.Port()), -1)
+	url = strings.Replace(url, "{user}", os.Getenv("DB_USER"), -1)
+	url = strings.Replace(url, "{password}", os.Getenv("DB_PASSWORD"), -1)
+	url = strings.Replace(url, "{dbname}", config.DatabaseName(), -1)
 
-	format := `host=%s port=%d user=%s password=%s dbname=%s`
-	dsn := fmt.Sprintf(format,
-		config.Host(),
-		config.Port(),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		config.DatabaseName())
-
-	di.db, connectionError = sql.Open("pgx", dsn)
+	di.db, connectionError = sql.Open("pgx", url)
 	if connectionError != nil {
 		return nil, connectionError
 	}

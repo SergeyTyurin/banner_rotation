@@ -1,0 +1,72 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: "potgres_db"
+    environment:
+      POSTGRES_DB: "rotation"
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./services/database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 10s
+      retries: 120
+    ports: 
+      - "5432:5432"
+    networks:
+        - app_net
+        - postgres_go_net
+
+  amqp:
+    image: rabbitmq:management
+    container_name: amqp
+    environment:
+      - RABBITMQ_DEFAULT_USER=${MQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${MQ_PASSWORD}
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app_net
+      - rabbitmq_go_net
+
+  rotation:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: rotation/latest
+    environment:
+      - MQ_USER=${MQ_USER}
+      - MQ_PASSWORD=${MQ_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: "service_healthy"
+      amqp:
+        condition: "service_healthy"
+    ports:
+      - "8081:8081"
+    networks:
+        - app_net
+        - rotation_go_net
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
+  postgres_go_net:
+    driver: bridge
+  rotation_go_net:
+    driver: bridge
+  app_net:
+    name: shared_net
+  

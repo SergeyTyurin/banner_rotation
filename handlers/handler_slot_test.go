@@ -4,17 +4,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/SergeyTyurin/banner_rotation/structures"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/database"
+	"github.com/SergeyTyurin/banner_rotation/structures"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestBadRequestSlot(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 
@@ -66,7 +69,7 @@ func TestBadRequestSlot(t *testing.T) {
 
 func TestNonExistsSlot(t *testing.T) {
 	d := database.NewDatabase()
-	config, _ := configs.GetDBConnectionConfig("../../config/connection_config.yaml")
+	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
 	defer closeConnection()
 

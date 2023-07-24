@@ -57,7 +57,7 @@ func createGroup(url string) structures.Group {
 }
 
 func TestBanner(t *testing.T) {
-	config, _ := configs.GetAppSettings("../config/connection_config.yaml")
+	config, _ := configs.GetAppSettings("../config/test/test_connection_config.yaml")
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "banner")
 	t.Run("create", func(t *testing.T) {
 		jsonBody := []byte(`{"info":"New Banner"}`)
@@ -108,7 +108,7 @@ func TestBanner(t *testing.T) {
 }
 
 func TestSlot(t *testing.T) {
-	config, _ := configs.GetAppSettings("../config/connection_config.yaml")
+	config, _ := configs.GetAppSettings("../config/test/test_connection_config.yaml")
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "slot")
 	t.Run("create", func(t *testing.T) {
 		jsonBody := []byte(`{"info":"New Banner"}`)
@@ -159,7 +159,7 @@ func TestSlot(t *testing.T) {
 }
 
 func TestGroup(t *testing.T) {
-	config, _ := configs.GetAppSettings("../config/connection_config.yaml")
+	config, _ := configs.GetAppSettings("../config/test/test_connection_config.yaml")
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "group")
 	t.Run("create", func(t *testing.T) {
 		jsonBody := []byte(`{"info":"New Banner"}`)
@@ -210,8 +210,8 @@ func TestGroup(t *testing.T) {
 }
 
 func TestRotation(t *testing.T) {
-	config, _ := configs.GetAppSettings("../config/connection_config.yaml")
-	mq_config, _ := configs.GetMessageBrokerConfig("../config/connection_config.yaml")
+	config, _ := configs.GetAppSettings("../config/test/test_connection_config.yaml")
+	mq_config, _ := configs.GetMessageBrokerConfig("../config/test/test_connection_config.yaml")
 	url := fmt.Sprintf("http://%s:%d", config.Host(), config.Port())
 	broker := message_broker.NewBroker()
 	mq_close, _ := broker.Connect(mq_config)
