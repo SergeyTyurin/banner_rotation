@@ -6,8 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/configs"
-
+	"github.com/SergeyTyurin/banner_rotation/configs"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

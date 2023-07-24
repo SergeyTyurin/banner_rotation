@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/ext/configs"
-	"github.com/SergeyTyurin/banner_rotation/ext/message_broker"
+	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner_rotation/message_broker"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )

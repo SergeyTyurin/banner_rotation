@@ -8,7 +8,6 @@ import (
 
 	"github.com/SergeyTyurin/banner_rotation/structures"
 
-	"github.com/SergeyTyurin/banner_rotation/int/configs"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 

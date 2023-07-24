@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
+	"github.com/SergeyTyurin/banner_rotation/database"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 )
 
-func (h *Handlers) GetSlot(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) GetBanner(w http.ResponseWriter, r *http.Request) {
 	if !r.URL.Query().Has("id") {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -21,61 +21,63 @@ func (h *Handlers) GetSlot(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	slot, err := h.db.GetSlot(id)
+	banner, err := h.db.GetBanner(id)
 	if err != nil {
+
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
+
 		w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	resp, _ := json.Marshal(slot)
+	resp, _ := json.Marshal(banner)
 	w.Write(resp)
 }
 
-func (h *Handlers) CreateSlot(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) CreateBanner(w http.ResponseWriter, r *http.Request) {
 	requestBody := new(bytes.Buffer)
 	_, err := requestBody.ReadFrom(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var slot structures.Slot
-	err = json.Unmarshal(requestBody.Bytes(), &slot)
+	var banner structures.Banner
+	err = json.Unmarshal(requestBody.Bytes(), &banner)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	createdSlot, err := h.db.CreateSlot(slot)
+	createdBanner, err := h.db.CreateBanner(banner)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	resp, _ := json.Marshal(createdSlot)
+	resp, _ := json.Marshal(createdBanner)
 	w.WriteHeader(http.StatusCreated)
 	w.Write(resp)
 }
 
-func (h *Handlers) UpdateSlot(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) UpdateBanner(w http.ResponseWriter, r *http.Request) {
 	requestBody := new(bytes.Buffer)
 	_, err := requestBody.ReadFrom(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var slot structures.Slot
-	err = json.Unmarshal(requestBody.Bytes(), &slot)
+	var banner structures.Banner
+	err = json.Unmarshal(requestBody.Bytes(), &banner)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = h.db.UpdateSlot(slot)
+	err = h.db.UpdateBanner(banner)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -88,7 +90,7 @@ func (h *Handlers) UpdateSlot(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h *Handlers) DeleteSlot(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) DeleteBanner(w http.ResponseWriter, r *http.Request) {
 	if !r.URL.Query().Has("id") {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -98,7 +100,7 @@ func (h *Handlers) DeleteSlot(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = h.db.DeleteSlot(id)
+	err = h.db.DeleteBanner(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)

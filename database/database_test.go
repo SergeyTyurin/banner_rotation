@@ -3,8 +3,6 @@ package database
 import (
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/configs"
-
 	"github.com/stretchr/testify/require"
 )
 

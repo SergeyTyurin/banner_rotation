@@ -4,9 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
-	"github.com/SergeyTyurin/banner_rotation/internal/handlers"
-	"github.com/SergeyTyurin/banner_rotation/internal/message_broker"
+	"github.com/SergeyTyurin/banner_rotation/database"
+	"github.com/SergeyTyurin/banner_rotation/message_broker"
 )
 
 type Router interface {

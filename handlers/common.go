@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
-	"github.com/SergeyTyurin/banner_rotation/internal/message_broker"
+	"github.com/SergeyTyurin/banner_rotation/database"
+	"github.com/SergeyTyurin/banner_rotation/message_broker"
 )
 
 type Handlers struct {

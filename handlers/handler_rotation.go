@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
 )
 
 func (h *Handlers) AddToRotation(w http.ResponseWriter, r *http.Request) {

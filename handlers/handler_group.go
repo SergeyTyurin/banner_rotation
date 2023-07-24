@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 )
 

@@ -8,8 +8,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/internal/configs"
-	"github.com/SergeyTyurin/banner_rotation/internal/database"
 	"github.com/SergeyTyurin/banner_rotation/structures"
 	"github.com/stretchr/testify/require"
 )
