@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GO111MODULE: "on"
+  DB_USER: "test"
+  DB_PASSWORD: "test"
+  MQ_USER: "test"
+  MQ_PASSWORD: "test"
+
+jobs:
+  tests_by_makefile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.20
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: make lint
+        run: make lint
+        working-directory: banner_rotation
+
+      - name: make build
+        run: make build
+        working-directory: banner_rotation
+
+      - name: make test
+        run: make test
+        working-directory: banner_rotation
+
+      - name: make integration_test
+        run: make integration_test
+        working-directory: banner_rotation
