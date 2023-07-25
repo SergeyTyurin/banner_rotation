@@ -1,9 +1,9 @@
-package message_broker
+package messagebroker
 
 import (
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/configs"
+	"github.com/SergeyTyurin/banner-rotation/configs"
 	"github.com/stretchr/testify/require"
 )
 

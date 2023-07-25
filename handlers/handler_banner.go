@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 )
 
 func (h *Handlers) GetBanner(w http.ResponseWriter, r *http.Request) {
@@ -21,23 +21,19 @@ func (h *Handlers) GetBanner(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	banner, err := h.db.GetBanner(id)
+	banner, err := h.db.DatabaseGetBanner(id)
 	if err != nil {
-
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-
 		_, _ = w.Write([]byte(err.Error()))
-
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	resp, _ := json.Marshal(banner)
 	_, _ = w.Write(resp)
-
 }
 
 func (h *Handlers) CreateBanner(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +50,7 @@ func (h *Handlers) CreateBanner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdBanner, err := h.db.CreateBanner(banner)
+	createdBanner, err := h.db.DatabaseCreateBanner(banner)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
@@ -79,7 +75,7 @@ func (h *Handlers) UpdateBanner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.db.UpdateBanner(banner)
+	err = h.db.DatabaseUpdateBanner(banner)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -102,7 +98,7 @@ func (h *Handlers) DeleteBanner(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = h.db.DeleteBanner(id)
+	err = h.db.DatabaseDeleteBanner(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)

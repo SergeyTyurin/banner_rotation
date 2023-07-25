@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 )
 
 func (h *Handlers) GetSlot(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func (h *Handlers) GetSlot(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	slot, err := h.db.GetSlot(id)
+	slot, err := h.db.DatabaseGetSlot(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -50,7 +50,7 @@ func (h *Handlers) CreateSlot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdSlot, err := h.db.CreateSlot(slot)
+	createdSlot, err := h.db.DatabaseCreateSlot(slot)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
@@ -75,7 +75,7 @@ func (h *Handlers) UpdateSlot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.db.UpdateSlot(slot)
+	err = h.db.DatabaseUpdateSlot(slot)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -98,7 +98,7 @@ func (h *Handlers) DeleteSlot(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = h.db.DeleteSlot(id)
+	err = h.db.DatabaseDeleteSlot(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)

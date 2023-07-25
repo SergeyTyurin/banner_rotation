@@ -1,13 +1,13 @@
 package database
 
 import (
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 )
 
-func (d *databaseImpl) GetGroups() ([]structures.Group, error) {
+func (d *databaseImpl) DatabaseGetGroups() ([]structures.Group, error) {
 	query := `SELECT id, info FROM "Groups"`
 	rows, err := d.db.Query(query)
-	if err != nil {
+	if err != nil || rows.Err() != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -19,23 +19,23 @@ func (d *databaseImpl) GetGroups() ([]structures.Group, error) {
 		if err := rows.Scan(&id, &info); err != nil {
 			return nil, err
 		}
-		groups = append(groups, structures.Group{Id: id, Info: info})
+		groups = append(groups, structures.Group{ID: id, Info: info})
 	}
 	return groups, nil
 }
 
-func (d *databaseImpl) GetGroup(id int) (structures.Group, error) {
+func (d *databaseImpl) DatabaseGetGroup(id int) (structures.Group, error) {
 	query := `SELECT info FROM "Groups" WHERE id = $1`
 	row := d.db.QueryRow(query, id)
 
 	var info string
 	if err := row.Scan(&info); err != nil {
-		return structures.Group{Id: invalidId}, ErrNotExist
+		return structures.Group{ID: invalidID}, ErrNotExist
 	}
-	return structures.Group{Id: id, Info: info}, nil
+	return structures.Group{ID: id, Info: info}, nil
 }
 
-func (d *databaseImpl) DeleteGroup(id int) error {
+func (d *databaseImpl) DatabaseDeleteGroup(id int) error {
 	if err := checkEntityIsExists(d, "Groups", id); err != nil {
 		return err
 	}
@@ -64,37 +64,34 @@ func (d *databaseImpl) DeleteGroup(id int) error {
 		return ErrNotExist
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
-func (d *databaseImpl) CreateGroup(entity structures.Group) (structures.Group, error) {
+func (d *databaseImpl) DatabaseCreateGroup(entity structures.Group) (structures.Group, error) {
 	query := `INSERT INTO "Groups" (info) VALUES($1)
 	RETURNING id`
 	tx, err := d.db.Begin()
 	if err != nil {
-		return structures.Group{Id: invalidId}, err
+		return structures.Group{ID: invalidID}, err
 	}
 	defer func() {
 		_ = tx.Rollback()
 	}()
 
 	row := tx.QueryRow(query, entity.Info)
-	id := invalidId
+	id := invalidID
 	if err := row.Scan(&id); err != nil {
-		return structures.Group{Id: invalidId}, err
+		return structures.Group{ID: invalidID}, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return structures.Group{Id: invalidId}, err
+		return structures.Group{ID: invalidID}, err
 	}
-	return structures.Group{Id: id, Info: entity.Info}, nil
+	return structures.Group{ID: id, Info: entity.Info}, nil
 }
 
-func (d *databaseImpl) UpdateGroup(entity structures.Group) error {
-	if err := checkEntityIsExists(d, "Groups", entity.Id); err != nil {
+func (d *databaseImpl) DatabaseUpdateGroup(entity structures.Group) error {
+	if err := checkEntityIsExists(d, "Groups", entity.ID); err != nil {
 		return err
 	}
 	query := `UPDATE "Groups"
@@ -109,7 +106,7 @@ func (d *databaseImpl) UpdateGroup(entity structures.Group) error {
 		_ = tx.Rollback()
 	}()
 
-	res, err := tx.Exec(query, entity.Info, entity.Id)
+	res, err := tx.Exec(query, entity.Info, entity.ID)
 	if err != nil {
 		return err
 	}
@@ -118,9 +115,5 @@ func (d *databaseImpl) UpdateGroup(entity structures.Group) error {
 		return ErrNotExist
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-
-	return nil
+	return tx.Commit()
 }

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -10,12 +11,12 @@ import (
 )
 
 var (
-	test_host = "127.0.0.1"
-	test_port = 3333
+	testHost = "127.0.0.1"
+	testPort = 3333
 )
 
 func TestCorrectURL(t *testing.T) {
-	mux := NewRouter(nil, nil).Mux()
+	mux := NewRouter(nil, nil).CustomMux()
 	urls := []struct {
 		url    string
 		method string
@@ -40,16 +41,16 @@ func TestCorrectURL(t *testing.T) {
 	}
 
 	for _, test := range urls {
-		url := fmt.Sprintf("http://%s:%d/%s", test_host, test_port, test.url)
-		request, _ := http.NewRequest(http.MethodGet, url, nil)
+		url := fmt.Sprintf("http://%s:%d/%s", testHost, testPort, test.url)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 		response := httptest.NewRecorder()
 		mux.ServeHTTP(response, request)
-		require.NotEqual(t, http.StatusNotFound, response.Result().StatusCode, url)
+		require.NotEqual(t, http.StatusNotFound, response.Result().StatusCode, url) //nolint:bodyclose
 	}
 }
 
 func TestIncorrectURL(t *testing.T) {
-	mux := NewRouter(nil, nil).Mux()
+	mux := NewRouter(nil, nil).CustomMux()
 	urls := []struct {
 		url    string
 		method string
@@ -64,8 +65,8 @@ func TestIncorrectURL(t *testing.T) {
 	}
 
 	for _, test := range urls {
-		url := fmt.Sprintf("http://%s:%d/%s", test_host, test_port, test.url)
-		request, _ := http.NewRequest(http.MethodGet, url, nil)
+		url := fmt.Sprintf("http://%s:%d/%s", testHost, testPort, test.url)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 		response := httptest.NewRecorder()
 		mux.ServeHTTP(response, request)
 		require.Equal(t, http.StatusNotFound, response.Code, url)
@@ -73,7 +74,7 @@ func TestIncorrectURL(t *testing.T) {
 }
 
 func TestIncorrectMethod(t *testing.T) {
-	mux := NewRouter(nil, nil).Mux()
+	mux := NewRouter(nil, nil).CustomMux()
 	urls := []struct {
 		url    string
 		method string
@@ -85,8 +86,8 @@ func TestIncorrectMethod(t *testing.T) {
 	}
 
 	for _, test := range urls {
-		url := fmt.Sprintf("http://%s:%d/%s", test_host, test_port, test.url)
-		request, _ := http.NewRequest(http.MethodGet, url, nil)
+		url := fmt.Sprintf("http://%s:%d/%s", testHost, testPort, test.url)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 		response := httptest.NewRecorder()
 		mux.ServeHTTP(response, request)
 		require.NotEqual(t, http.StatusMethodNotAllowed, response.Code, url)

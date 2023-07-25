@@ -52,7 +52,7 @@ func (router *routerImpl) handleRotationFunc(w http.ResponseWriter, r *http.Requ
 	case http.MethodGet:
 		router.handlers.SelectFromRotation(w, r) // Выбор баннера из ротации
 	case http.MethodPost:
-		router.handlers.AddToRotation(w, r) // Добавление баннера в ротацию
+		router.handlers.HandlerAddToRotation(w, r) // Добавление баннера в ротацию
 	case http.MethodPut:
 		router.handlers.RegisterTransition(w, r) // Зарегистрировать переход по баннеру
 	case http.MethodDelete:
@@ -71,7 +71,7 @@ func (router *routerImpl) handleBannersFunc(w http.ResponseWriter, r *http.Reque
 	case http.MethodGet:
 		router.handlers.GetBanner(w, r) // Получение баннер
 	case http.MethodPost:
-		router.handlers.CreateBanner(w, r) //Создание нового баннера
+		router.handlers.CreateBanner(w, r) // Создание нового баннера
 	case http.MethodPut:
 		router.handlers.UpdateBanner(w, r) // Обновление информации о баннере
 	case http.MethodDelete:

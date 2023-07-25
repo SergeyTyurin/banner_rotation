@@ -3,21 +3,21 @@ package database
 import (
 	"database/sql"
 
-	"github.com/SergeyTyurin/banner_rotation/banner_selector"
+	"github.com/SergeyTyurin/banner-rotation/bannerselector"
 )
 
-func checkEntityInRotationTx(tx *sql.Tx, bannerId, slotId, groupId int) (bool, error) {
+func checkEntityInRotationTx(tx *sql.Tx, bannerID, slotID, groupID int) (bool, error) {
 	count := 0
 	if err := tx.QueryRow(`SELECT count(*) 
 	FROM "Statistic"
 	WHERE slot_id=$1 AND banner_id=$2 AND group_id=$3`,
-		slotId, bannerId, groupId).Scan(&count); err != nil {
+		slotID, bannerID, groupID).Scan(&count); err != nil {
 		return false, err
 	}
 	return count > 0, nil
 }
 
-func increaseDisplay(d *databaseImpl, bannerId, slotId, groupId int) error {
+func increaseDisplay(d *databaseImpl, bannerID, slotID, groupID int) error {
 	tx, err := d.db.Begin()
 	if err != nil {
 		return err
@@ -30,25 +30,22 @@ func increaseDisplay(d *databaseImpl, bannerId, slotId, groupId int) error {
 	SET click_count = click_count + 1
 	WHERE slot_id=$1 AND group_id=$2 AND banner_id=$3`
 
-	_, err = tx.Exec(query, slotId, groupId, bannerId)
+	_, err = tx.Exec(query, slotID, groupID, bannerID)
 	if err != nil {
 		return err
 	}
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
-func (d *databaseImpl) AddToRotation(bannerId, slotId int) error {
-	if err := checkEntityIsExists(d, "Banners", bannerId); err != nil {
+func (d *databaseImpl) DatabaseAddToRotation(bannerID, slotID int) error { //nolint:stylecheck
+	if err := checkEntityIsExists(d, "Banners", bannerID); err != nil {
 		return err
 	}
-	if err := checkEntityIsExists(d, "Slots", slotId); err != nil {
+	if err := checkEntityIsExists(d, "Slots", slotID); err != nil {
 		return err
 	}
 
-	groups, err := d.GetGroups()
+	groups, err := d.DatabaseGetGroups()
 	if err != nil {
 		return err
 	}
@@ -65,35 +62,32 @@ func (d *databaseImpl) AddToRotation(bannerId, slotId int) error {
 	VALUES($1, $2, $3, $4, $5)`
 
 	for _, group := range groups {
-		inRotation, err := checkEntityInRotationTx(tx, bannerId, slotId, group.Id)
+		inRotation, err := checkEntityInRotationTx(tx, bannerID, slotID, group.ID)
 		if err != nil {
 			return err
 		}
 		if inRotation {
 			return ErrAlreadyInRotation
 		}
-		_, err = tx.Exec(query, bannerId, slotId, group.Id, 0, 0)
+		_, err = tx.Exec(query, bannerID, slotID, group.ID, 0, 0)
 		if err != nil {
 			return err
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
-func (d *databaseImpl) DeleteFromRotation(bannerId, slotId int) error {
-	if err := checkEntityIsExists(d, "Banners", bannerId); err != nil {
+func (d *databaseImpl) DatabaseDeleteFromRotation(bannerID, slotID int) error {
+	if err := checkEntityIsExists(d, "Banners", bannerID); err != nil {
 		return err
 	}
 
-	if err := checkEntityIsExists(d, "Slots", slotId); err != nil {
+	if err := checkEntityIsExists(d, "Slots", slotID); err != nil {
 		return err
 	}
 
-	groups, err := d.GetGroups()
+	groups, err := d.DatabaseGetGroups()
 	if err != nil {
 		return err
 	}
@@ -107,7 +101,7 @@ func (d *databaseImpl) DeleteFromRotation(bannerId, slotId int) error {
 	}()
 
 	for _, group := range groups {
-		inRotation, err := checkEntityInRotationTx(tx, bannerId, slotId, group.Id)
+		inRotation, err := checkEntityInRotationTx(tx, bannerID, slotID, group.ID)
 		if err != nil {
 			return err
 		}
@@ -119,30 +113,27 @@ func (d *databaseImpl) DeleteFromRotation(bannerId, slotId int) error {
 	query := `DELETE FROM "Statistic" 
 	WHERE banner_id=$1 AND slot_id=$2`
 
-	_, err = tx.Exec(query, bannerId, slotId)
+	_, err = tx.Exec(query, bannerID, slotID)
 	if err != nil {
 		return err
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
-func (d *databaseImpl) SelectFromRotation(slotId, groupId int) (bannerId int, err error) {
-	if err := checkEntityIsExists(d, "Groups", groupId); err != nil {
-		return invalidId, err
+func (d *databaseImpl) DatabaseSelectFromRotation(slotID, groupID int) (bannerID int, err error) {
+	if err := checkEntityIsExists(d, "Groups", groupID); err != nil {
+		return invalidID, err
 	}
-	if err := checkEntityIsExists(d, "Slots", slotId); err != nil {
-		return invalidId, err
+	if err := checkEntityIsExists(d, "Slots", slotID); err != nil {
+		return invalidID, err
 	}
 
 	query := `SELECT banner_id, display_count, click_count FROM "Statistic"
 	WHERE slot_id=$1 AND group_id=$2`
-	rows, err := d.db.Query(query, slotId, groupId)
-	if err != nil {
-		return invalidId, err
+	rows, err := d.db.Query(query, slotID, groupID)
+	if err != nil || rows.Err() != nil {
+		return invalidID, err
 	}
 	defer rows.Close()
 
@@ -150,42 +141,42 @@ func (d *databaseImpl) SelectFromRotation(slotId, groupId int) (bannerId int, er
 	displays := make([]int, 0)
 	clicks := make([]int, 0)
 	for rows.Next() {
-		bannerId := int(0)
+		bannerID := int(0)
 		displayCount := int(0)
 		clickCount := int(0)
-		if err := rows.Scan(&bannerId, &displayCount, &clickCount); err != nil {
-			return invalidId, err
+		if err := rows.Scan(&bannerID, &displayCount, &clickCount); err != nil {
+			return invalidID, err
 		}
-		banners = append(banners, bannerId)
+		banners = append(banners, bannerID)
 		displays = append(displays, displayCount)
 		clicks = append(clicks, clickCount)
 	}
 
 	if len(banners) == 0 {
-		return invalidId, ErrNotInRotation
+		return invalidID, ErrNotInRotation
 	}
 
-	bannerIndex, err := banner_selector.SelectBannerIndex(displays, clicks)
+	bannerIndex, err := bannerselector.SelectBannerIndex(displays, clicks)
 	if err != nil {
-		return invalidId, err
+		return invalidID, err
 	}
-	if err := increaseDisplay(d, banners[bannerIndex], slotId, groupId); err != nil {
-		return invalidId, err
+	if err := increaseDisplay(d, banners[bannerIndex], slotID, groupID); err != nil {
+		return invalidID, err
 	}
 
 	return banners[bannerIndex], nil
 }
 
-func (d *databaseImpl) RegisterTransition(slotId, bannerId, groupId int) error {
-	if err := checkEntityIsExists(d, "Banners", bannerId); err != nil {
+func (d *databaseImpl) DatabaseRegisterTransition(slotID, bannerID, groupID int) error {
+	if err := checkEntityIsExists(d, "Banners", bannerID); err != nil {
 		return err
 	}
 
-	if err := checkEntityIsExists(d, "Slots", slotId); err != nil {
+	if err := checkEntityIsExists(d, "Slots", slotID); err != nil {
 		return err
 	}
 
-	if err := checkEntityIsExists(d, "Groups", groupId); err != nil {
+	if err := checkEntityIsExists(d, "Groups", groupID); err != nil {
 		return err
 	}
 
@@ -197,7 +188,7 @@ func (d *databaseImpl) RegisterTransition(slotId, bannerId, groupId int) error {
 		_ = tx.Rollback()
 	}()
 
-	inRotation, err := checkEntityInRotationTx(tx, bannerId, slotId, groupId)
+	inRotation, err := checkEntityInRotationTx(tx, bannerID, slotID, groupID)
 	if err != nil {
 		return err
 	}
@@ -209,13 +200,10 @@ func (d *databaseImpl) RegisterTransition(slotId, bannerId, groupId int) error {
 	SET click_count = click_count + 1
 	WHERE slot_id=$1 AND group_id=$2 AND banner_id=$3`
 
-	_, err = tx.Exec(query, slotId, groupId, bannerId)
+	_, err = tx.Exec(query, slotID, groupID, bannerID)
 	if err != nil {
 		return err
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }

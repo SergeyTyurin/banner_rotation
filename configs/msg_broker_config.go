@@ -16,7 +16,7 @@ type MessageBrokerConfig interface {
 type messageBrokerImpl struct {
 	HostBR string `yaml:"host"`
 	PortBR int    `yaml:"port"`
-	UrlBR  string `yaml:"url"`
+	URLBR  string `yaml:"url"`
 }
 
 func GetMessageBrokerConfig(filename string) (MessageBrokerConfig, error) {
@@ -50,5 +50,5 @@ func (c *messageBrokerImpl) Port() int {
 }
 
 func (c *messageBrokerImpl) URL() string {
-	return c.UrlBR
+	return c.URLBR
 }

@@ -4,7 +4,7 @@ ifndef VERBOSE
 endif
 
 lint:
-	golangci-lint run .
+	golangci-lint run ./...
 build:
 	export DB_USER=${DATABASE_USER} && \
 	export DB_PASSWORD=${DATABASE_PASSWORD} && \

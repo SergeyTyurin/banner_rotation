@@ -4,67 +4,69 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/configs"
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/configs"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
 func setTestData(d databaseImpl) {
-	d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)  //nolint:all
-	d.db.Exec(`TRUNCATE TABLE "Slots" RESTART IDENTITY CASCADE`)   //nolint:all
-	d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
+	_, _ = d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+	_, _ = d.db.Exec(`TRUNCATE TABLE "Slots" RESTART IDENTITY CASCADE`)
+	_, _ = d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
 
 	for i := 0; i < 10; i++ {
-		d.CreateBanner(structures.Banner{Info: "banner_" + strconv.Itoa(i+1)}) //nolint:all
+		_, _ = d.DatabaseCreateBanner(structures.Banner{Info: "banner_" + strconv.Itoa(i+1)})
 	}
 	for i := 0; i < 2; i++ {
-		d.CreateGroup(structures.Group{Info: "group_" + strconv.Itoa(i+1)}) //nolint:all
+		_, _ = d.DatabaseCreateGroup(structures.Group{Info: "group_" + strconv.Itoa(i+1)})
 	}
 	for i := 0; i < 4; i++ {
-		d.CreateSlot(structures.Slot{Info: "slot_" + strconv.Itoa(i+1)}) //nolint:all
+		_, _ = d.DatabaseCreateSlot(structures.Slot{Info: "slot_" + strconv.Itoa(i+1)})
 	}
 }
 
-func TestAddToRotation(t *testing.T) {
+func TestDatabaseAddToRotation(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 	setTestData(d)
 
 	t.Run("simple add", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		slotId := 1
-		bannerId := 2
-		err := d.AddToRotation(bannerId, slotId)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		slotID := 1
+		bannerID := 2
+		err := d.DatabaseAddToRotation(bannerID, slotID)
 		require.NoError(t, err)
 
 		row := d.db.QueryRow(`SELECT count(*) FROM "Statistic"
-		WHERE slot_id=$1 AND banner_id=$2`, slotId, bannerId)
+		WHERE slot_id=$1 AND banner_id=$2`, slotID, bannerID)
 
 		count := 0
-		row.Scan(&count) //nolint:all
-		//Test Add for each group
-		groups, _ := d.GetGroups()
+		_ = row.Scan(&count)
+		// Test Add for each group
+		groups, _ := d.DatabaseGetGroups()
 		require.Equal(t, count, len(groups))
 	})
 
 	t.Run("add non existed intities", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
 
-		err := d.AddToRotation(20, 1)
+		err := d.DatabaseAddToRotation(20, 1)
 		require.ErrorIs(t, err, ErrNotExist)
 
-		err = d.AddToRotation(1, 20)
+		err = d.DatabaseAddToRotation(1, 20)
 		require.ErrorIs(t, err, ErrNotExist)
 	})
 
 	t.Run("add already in rotation", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		err := d.AddToRotation(1, 1)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		err := d.DatabaseAddToRotation(1, 1)
 		require.NoError(t, err)
 
-		err = d.AddToRotation(1, 1)
+		err = d.DatabaseAddToRotation(1, 1)
 		require.ErrorIs(t, err, ErrAlreadyInRotation)
 	})
 }
@@ -72,31 +74,33 @@ func TestAddToRotation(t *testing.T) {
 func TestDeleteFromRotation(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 	setTestData(d)
 
 	t.Run("simple delete", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		slotId := 1
-		bannerId := 2
-		d.AddToRotation(bannerId, slotId) //nolint:all
-		err := d.DeleteFromRotation(bannerId, slotId)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		slotID := 1
+		bannerID := 2
+		_ = d.DatabaseAddToRotation(bannerID, slotID)
+		err := d.DatabaseDeleteFromRotation(bannerID, slotID)
 		require.NoError(t, err)
 
 		row := d.db.QueryRow(`SELECT count(*) FROM "Statistic"
-	WHERE slot_id=$1 AND banner_id=$2`, slotId, bannerId)
+	WHERE slot_id=$1 AND banner_id=$2`, slotID, bannerID)
 		count := 0
-		row.Scan(&count) //nolint:all
+		_ = row.Scan(&count)
 		require.Equal(t, count, 0)
 	})
 
 	t.Run("delete not in rotation", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		d.AddToRotation(1, 1)                                            //nolint:all
-		d.AddToRotation(2, 1)                                            //nolint:all
-		d.AddToRotation(1, 2)                                            //nolint:all
-		err := d.DeleteFromRotation(2, 2)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		_ = d.DatabaseAddToRotation(1, 1)
+		_ = d.DatabaseAddToRotation(2, 1)
+		_ = d.DatabaseAddToRotation(1, 2)
+		err := d.DatabaseDeleteFromRotation(2, 2)
 		require.ErrorIs(t, err, ErrNotInRotation)
 	})
 }
@@ -104,33 +108,35 @@ func TestDeleteFromRotation(t *testing.T) {
 func TestSelectFromRotation(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 	setTestData(d)
 
 	t.Run("existing select", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		_ = d.AddToRotation(1, 1)
-		_ = d.AddToRotation(2, 1)
-		groups, _ := d.GetGroups()
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		_ = d.DatabaseAddToRotation(1, 1)
+		_ = d.DatabaseAddToRotation(2, 1)
+		groups, _ := d.DatabaseGetGroups()
 		for _, group := range groups {
-			banner_id, err := d.SelectFromRotation(1, group.Id)
+			bannerID, err := d.DatabaseSelectFromRotation(1, group.ID)
 			require.NoError(t, err)
-			require.Equal(t, banner_id, 1)
+			require.Equal(t, bannerID, 1)
 
-			banner_id, err = d.SelectFromRotation(1, group.Id)
+			bannerID, err = d.DatabaseSelectFromRotation(1, group.ID)
 			require.NoError(t, err)
-			require.Equal(t, banner_id, 2)
+			require.Equal(t, bannerID, 2)
 		}
 	})
 
 	t.Run("non existing select", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		groups, _ := d.GetGroups()
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		groups, _ := d.DatabaseGetGroups()
 		for _, group := range groups {
-			banner_id, notInError := d.SelectFromRotation(1, group.Id)
+			bannerID, notInError := d.DatabaseSelectFromRotation(1, group.ID)
 			require.Error(t, notInError)
-			require.Equal(t, banner_id, invalidId)
+			require.Equal(t, bannerID, invalidID)
 		}
 	})
 }
@@ -138,39 +144,41 @@ func TestSelectFromRotation(t *testing.T) {
 func TestRegisterTransition(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 	setTestData(d)
 
 	t.Run("simple register", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		_ = d.AddToRotation(2, 1)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		_ = d.DatabaseAddToRotation(2, 1)
 
-		groups, _ := d.GetGroups()
+		groups, _ := d.DatabaseGetGroups()
 		for _, group := range groups {
-			err := d.RegisterTransition(1, 2, group.Id)
+			err := d.DatabaseRegisterTransition(1, 2, group.ID)
 			require.NoError(t, err)
 			row := d.db.QueryRow(`SELECT click_count FROM "Statistic"
-	WHERE slot_id=$1 AND banner_id=$2 AND group_id=$3`, 1, 2, group.Id)
+	WHERE slot_id=$1 AND banner_id=$2 AND group_id=$3`, 1, 2, group.ID)
 			count := 0
-			row.Scan(&count) //nolint:all
+			_ = row.Scan(&count)
 			require.Equal(t, count, 1)
 		}
 	})
 
 	t.Run("register for not in rotation", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`) //nolint:all
-		_ = d.AddToRotation(1, 2)
+		_, _ = d.db.Exec(`TRUNCATE TABLE "Statistic" RESTART IDENTITY CASCADE`)
+		_ = d.DatabaseAddToRotation(1, 2)
 
-		groups, _ := d.GetGroups()
+		groups, _ := d.DatabaseGetGroups()
 		for _, group := range groups {
-			err := d.RegisterTransition(1, 1, group.Id)
+			err := d.DatabaseRegisterTransition(1, 1, group.ID)
 			require.ErrorIs(t, err, ErrNotInRotation)
-			err = d.RegisterTransition(2, 2, group.Id)
+			err = d.DatabaseRegisterTransition(2, 2, group.ID)
 			require.ErrorIs(t, err, ErrNotInRotation)
 		}
 
-		err := d.RegisterTransition(1, 10, 2)
+		err := d.DatabaseRegisterTransition(1, 10, 2)
 		require.ErrorIs(t, err, ErrNotInRotation)
 	})
 }

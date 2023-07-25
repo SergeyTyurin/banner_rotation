@@ -1,7 +1,7 @@
 FROM golang:1.20
 
 # Set destination for COPY
-WORKDIR /banner_rotation
+WORKDIR /banner-rotation
 
 # Download Go modules
 COPY go.mod go.sum ./

@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/SergeyTyurin/banner_rotation/configs"
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/message_broker"
-	"github.com/SergeyTyurin/banner_rotation/router"
+	"github.com/SergeyTyurin/banner-rotation/configs"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/messagebroker"
+	"github.com/SergeyTyurin/banner-rotation/router"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 	}
 	// Подключение в БД
 	db := database.NewDatabase()
-	closeFunc, err := db.Connect(dbConfig)
+	closeFunc, err := db.DatabaseConnect(dbConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func main() {
 		return
 	}
 
-	broker := message_broker.NewBroker()
+	broker := messagebroker.NewBroker()
 	closeBroker, err := broker.Connect(msgConfig)
 	if err != nil {
 		log.Println(err)
@@ -52,7 +52,7 @@ func main() {
 	muxRouter := router.NewRouter(db, broker)
 	server := http.Server{
 		Addr:              fmt.Sprintf("%s:%d", appConfig.Host(), appConfig.Port()),
-		Handler:           muxRouter.Mux(),
+		Handler:           muxRouter.CustomMux(),
 		ReadHeaderTimeout: 30 * time.Second,
 	}
 	defer server.Close()

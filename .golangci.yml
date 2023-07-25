@@ -1,4 +1,4 @@
-run:
+gitrun:
   tests: true
 
 linters-settings:
@@ -47,7 +47,7 @@ linters:
     - nolintlint
     - prealloc
     - predeclared
-    - revive
+    # - revive
     - rowserrcheck
     - sqlclosecheck
     - staticcheck

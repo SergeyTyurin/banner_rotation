@@ -1,13 +1,13 @@
 package database
 
 import (
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 )
 
-func (d *databaseImpl) GetBanners() ([]structures.Banner, error) {
+func (d *databaseImpl) DatabaseGetBanners() ([]structures.Banner, error) {
 	query := `SELECT id, info FROM "Banners"`
 	rows, err := d.db.Query(query)
-	if err != nil {
+	if err != nil || rows.Err() != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -20,23 +20,23 @@ func (d *databaseImpl) GetBanners() ([]structures.Banner, error) {
 		if err != nil {
 			return nil, err
 		}
-		banners = append(banners, structures.Banner{Id: id, Info: info})
+		banners = append(banners, structures.Banner{ID: id, Info: info})
 	}
 	return banners, nil
 }
 
-func (d *databaseImpl) GetBanner(id int) (structures.Banner, error) {
+func (d *databaseImpl) DatabaseGetBanner(id int) (structures.Banner, error) {
 	query := `SELECT info FROM "Banners" WHERE id = $1`
 	row := d.db.QueryRow(query, id)
 
 	var info string
 	if err := row.Scan(&info); err != nil {
-		return structures.Banner{Id: invalidId}, ErrNotExist
+		return structures.Banner{ID: invalidID}, ErrNotExist
 	}
-	return structures.Banner{Id: id, Info: info}, nil
+	return structures.Banner{ID: id, Info: info}, nil
 }
 
-func (d *databaseImpl) DeleteBanner(id int) error {
+func (d *databaseImpl) DatabaseDeleteBanner(id int) error {
 	if err := checkEntityIsExists(d, "Banners", id); err != nil {
 		return err
 	}
@@ -65,37 +65,34 @@ func (d *databaseImpl) DeleteBanner(id int) error {
 		return ErrNotExist
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
-func (d *databaseImpl) CreateBanner(entity structures.Banner) (structures.Banner, error) {
+func (d *databaseImpl) DatabaseCreateBanner(entity structures.Banner) (structures.Banner, error) {
 	query := `INSERT INTO "Banners" (info) VALUES($1)
 	RETURNING id`
 	tx, err := d.db.Begin()
 	if err != nil {
-		return structures.Banner{Id: invalidId}, err
+		return structures.Banner{ID: invalidID}, err
 	}
 	defer func() {
 		_ = tx.Rollback()
 	}()
 
 	row := tx.QueryRow(query, entity.Info)
-	id := invalidId
+	id := invalidID
 	if err := row.Scan(&id); err != nil {
-		return structures.Banner{Id: invalidId}, err
+		return structures.Banner{ID: invalidID}, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return structures.Banner{Id: invalidId}, err
+		return structures.Banner{ID: invalidID}, err
 	}
-	return structures.Banner{Id: id, Info: entity.Info}, nil
+	return structures.Banner{ID: id, Info: entity.Info}, nil
 }
 
-func (d *databaseImpl) UpdateBanner(entity structures.Banner) error {
-	if err := checkEntityIsExists(d, "Banners", entity.Id); err != nil {
+func (d *databaseImpl) DatabaseUpdateBanner(entity structures.Banner) error {
+	if err := checkEntityIsExists(d, "Banners", entity.ID); err != nil {
 		return err
 	}
 	query := `UPDATE "Banners"
@@ -110,7 +107,7 @@ func (d *databaseImpl) UpdateBanner(entity structures.Banner) error {
 		_ = tx.Rollback()
 	}()
 
-	res, err := tx.Exec(query, entity.Info, entity.Id)
+	res, err := tx.Exec(query, entity.Info, entity.ID)
 	if err != nil {
 		return err
 	}
@@ -119,9 +116,5 @@ func (d *databaseImpl) UpdateBanner(entity structures.Banner) error {
 		return ErrNotExist
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-
-	return nil
+	return tx.Commit()
 }

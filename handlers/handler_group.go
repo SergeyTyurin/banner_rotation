@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/structures"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 )
 
 func (h *Handlers) GetGroup(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func (h *Handlers) GetGroup(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	group, err := h.db.GetGroup(id)
+	group, err := h.db.DatabaseGetGroup(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -50,7 +50,7 @@ func (h *Handlers) CreateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdGroup, err := h.db.CreateGroup(group)
+	createdGroup, err := h.db.DatabaseCreateGroup(group)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(err.Error()))
@@ -75,7 +75,7 @@ func (h *Handlers) UpdateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.db.UpdateGroup(group)
+	err = h.db.DatabaseUpdateGroup(group)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)
@@ -98,7 +98,7 @@ func (h *Handlers) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = h.db.DeleteGroup(id)
+	err = h.db.DatabaseDeleteGroup(id)
 	if err != nil {
 		if errors.Is(err, database.ErrNotExist) {
 			w.WriteHeader(http.StatusNotFound)

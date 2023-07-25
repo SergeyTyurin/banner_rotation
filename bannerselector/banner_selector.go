@@ -1,4 +1,4 @@
-package banner_selector
+package bannerselector
 
 import (
 	"errors"
@@ -9,8 +9,8 @@ var errIncorrectInput = errors.New("incorrect input")
 
 const invalidIndex = -1
 
-func ucb1(sum_p, p int, q float64) float64 {
-	return q + math.Sqrt(2*math.Log(float64(sum_p))/float64(p))
+func ucb1(sump, p int, q float64) float64 {
+	return q + math.Sqrt(2*math.Log(float64(sump))/float64(p))
 }
 
 func isCorrectInput(click, display int) bool {
@@ -22,15 +22,15 @@ func SelectBannerIndex(displays []int, clicks []int) (int, error) {
 		return invalidIndex, errIncorrectInput
 	}
 
-	N := int(len(displays)) // количество баннеров в выборке
-	var sum_displays int
+	N := len(displays) // количество баннеров в выборке
+	var sumDisplays int
 	for i := 0; i < N; i++ {
-		sum_displays += displays[i]
+		sumDisplays += displays[i]
 	}
 
 	// Определяем баннер для показа
-	var max_ucb float64
-	var b_index int
+	var maxUcb float64
+	var bIndex int
 	for i := 0; i < N; i++ {
 		if !isCorrectInput(clicks[i], displays[i]) {
 			return invalidIndex, errIncorrectInput
@@ -40,12 +40,12 @@ func SelectBannerIndex(displays []int, clicks []int) (int, error) {
 		}
 
 		q := float64(clicks[i]) / float64(displays[i])
-		ucb := ucb1(sum_displays, displays[i], q)
-		if max_ucb < ucb {
-			max_ucb = ucb
-			b_index = i
+		ucb := ucb1(sumDisplays, displays[i], q)
+		if maxUcb < ucb {
+			maxUcb = ucb
+			bIndex = i
 		}
 	}
 
-	return b_index, nil
+	return bIndex, nil
 }

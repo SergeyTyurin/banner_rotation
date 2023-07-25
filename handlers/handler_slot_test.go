@@ -2,31 +2,33 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SergeyTyurin/banner_rotation/configs"
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/structures"
-
+	"github.com/SergeyTyurin/banner-rotation/configs"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/structures"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBadRequestSlot(t *testing.T) {
 	d := database.NewDatabase()
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 
 	h := Handlers{d, nil}
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "/slot")
 
 	t.Run("create", func(t *testing.T) {
 		jsonBody := []byte("incorrect")
-		request, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonBody))
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, url, bytes.NewReader(jsonBody))
 		response := httptest.NewRecorder()
 
 		h.CreateSlot(response, request)
@@ -35,7 +37,7 @@ func TestBadRequestSlot(t *testing.T) {
 
 	t.Run("update", func(t *testing.T) {
 		jsonBody := []byte("incorrect")
-		request, _ := http.NewRequest(http.MethodPut, url, bytes.NewReader(jsonBody))
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodPut, url, bytes.NewReader(jsonBody))
 		response := httptest.NewRecorder()
 
 		h.UpdateSlot(response, request)
@@ -43,7 +45,7 @@ func TestBadRequestSlot(t *testing.T) {
 	})
 
 	t.Run("delete", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodDelete, url, nil)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, url, nil)
 		response := httptest.NewRecorder()
 
 		q := request.URL.Query()
@@ -55,7 +57,7 @@ func TestBadRequestSlot(t *testing.T) {
 	})
 
 	t.Run("get", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodGet, url, nil)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 		response := httptest.NewRecorder()
 
 		q := request.URL.Query()
@@ -70,16 +72,18 @@ func TestBadRequestSlot(t *testing.T) {
 func TestNonExistsSlot(t *testing.T) {
 	d := database.NewDatabase()
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
-	closeConnection, _ := d.Connect(config)
-	defer closeConnection() //nolint:all
+	closeConnection, _ := d.DatabaseConnect(config)
+	defer func() {
+		_ = closeConnection()
+	}()
 
 	h := Handlers{d, nil}
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "/slot")
 
 	t.Run("update", func(t *testing.T) {
-		entity := structures.Slot{Id: -1, Info: "entity"}
+		entity := structures.Slot{ID: -1, Info: "entity"}
 		jsonBody, _ := json.Marshal(entity)
-		request, _ := http.NewRequest(http.MethodPut, url, bytes.NewReader(jsonBody))
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodPut, url, bytes.NewReader(jsonBody))
 		response := httptest.NewRecorder()
 
 		h.UpdateSlot(response, request)
@@ -87,7 +91,7 @@ func TestNonExistsSlot(t *testing.T) {
 	})
 
 	t.Run("delete", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodDelete, url, nil)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodDelete, url, nil)
 		response := httptest.NewRecorder()
 
 		q := request.URL.Query()
@@ -99,7 +103,7 @@ func TestNonExistsSlot(t *testing.T) {
 	})
 
 	t.Run("get", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodGet, url, nil)
+		request, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 		response := httptest.NewRecorder()
 
 		q := request.URL.Query()

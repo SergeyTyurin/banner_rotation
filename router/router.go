@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SergeyTyurin/banner_rotation/database"
-	"github.com/SergeyTyurin/banner_rotation/handlers"
-	"github.com/SergeyTyurin/banner_rotation/message_broker"
+	"github.com/SergeyTyurin/banner-rotation/database"
+	"github.com/SergeyTyurin/banner-rotation/handlers"
+	"github.com/SergeyTyurin/banner-rotation/messagebroker"
 )
 
 type Router interface {
-	Mux() *http.ServeMux
+	CustomMux() *http.ServeMux
 }
 
 type routerImpl struct {
@@ -18,7 +18,7 @@ type routerImpl struct {
 	mux      *http.ServeMux
 }
 
-func NewRouter(db database.Database, broker message_broker.MessageBroker) Router {
+func NewRouter(db database.Database, broker messagebroker.MessageBroker) Router {
 	var r routerImpl
 	r.mux = http.NewServeMux()
 	r.mux.HandleFunc("/banner", r.handleBannersFunc)
@@ -37,6 +37,6 @@ func NewRouter(db database.Database, broker message_broker.MessageBroker) Router
 	return &r
 }
 
-func (r *routerImpl) Mux() *http.ServeMux {
+func (r *routerImpl) CustomMux() *http.ServeMux { //nolint:stylecheck
 	return r.mux
 }

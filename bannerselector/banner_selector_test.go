@@ -1,4 +1,4 @@
-package banner_selector
+package bannerselector
 
 import (
 	"testing"
@@ -144,7 +144,6 @@ func TestEqualInputValues(t *testing.T) {
 }
 
 func TestNegativeInput(t *testing.T) {
-
 	t.Run("select with negative click", func(t *testing.T) {
 		clicks := []int{-1}
 		displays := []int{3}
