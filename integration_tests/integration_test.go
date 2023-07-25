@@ -19,9 +19,9 @@ func createBanner(url string) structures.Banner {
 	request, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonBody))
 	response, _ := http.DefaultClient.Do(request)
 	responseBody := new(bytes.Buffer)
-	responseBody.ReadFrom(response.Body)
+	responseBody.ReadFrom(response.Body) //nolint:all
 	var created structures.Banner
-	json.Unmarshal(responseBody.Bytes(), &created)
+	json.Unmarshal(responseBody.Bytes(), &created) //nolint:all
 	return created
 }
 
@@ -30,9 +30,9 @@ func createSlot(url string) structures.Slot {
 	request, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonBody))
 	response, _ := http.DefaultClient.Do(request)
 	responseBody := new(bytes.Buffer)
-	responseBody.ReadFrom(response.Body)
+	responseBody.ReadFrom(response.Body) //nolint:all
 	var created structures.Slot
-	json.Unmarshal(responseBody.Bytes(), &created)
+	json.Unmarshal(responseBody.Bytes(), &created) //nolint:all
 	return created
 }
 
@@ -42,7 +42,7 @@ func addToRotation(url string, bannerId, slotId int) {
 	q.Add("banner_id", strconv.Itoa(bannerId))
 	q.Add("slot_id", strconv.Itoa(slotId))
 	request.URL.RawQuery = q.Encode()
-	http.DefaultClient.Do(request)
+	http.DefaultClient.Do(request) //nolint:all
 }
 
 func createGroup(url string) structures.Group {
@@ -50,9 +50,9 @@ func createGroup(url string) structures.Group {
 	request, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonBody))
 	response, _ := http.DefaultClient.Do(request)
 	responseBody := new(bytes.Buffer)
-	responseBody.ReadFrom(response.Body)
+	responseBody.ReadFrom(response.Body) //nolint:all
 	var created structures.Group
-	json.Unmarshal(responseBody.Bytes(), &created)
+	json.Unmarshal(responseBody.Bytes(), &created) //nolint:all
 	return created
 }
 
@@ -100,9 +100,9 @@ func TestBanner(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		responceBody := new(bytes.Buffer)
-		responceBody.ReadFrom(response.Body)
+		responceBody.ReadFrom(response.Body) //nolint:all
 		var fromDB structures.Banner
-		json.Unmarshal(responceBody.Bytes(), &fromDB)
+		json.Unmarshal(responceBody.Bytes(), &fromDB) //nolint:all
 		require.Equal(t, created.Id, fromDB.Id)
 	})
 }
@@ -151,9 +151,9 @@ func TestSlot(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		responceBody := new(bytes.Buffer)
-		responceBody.ReadFrom(response.Body)
+		responceBody.ReadFrom(response.Body) //nolint:all
 		var fromDB structures.Slot
-		json.Unmarshal(responceBody.Bytes(), &fromDB)
+		json.Unmarshal(responceBody.Bytes(), &fromDB) //nolint:all
 		require.Equal(t, created.Id, fromDB.Id)
 	})
 }
@@ -202,9 +202,9 @@ func TestGroup(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		responceBody := new(bytes.Buffer)
-		responceBody.ReadFrom(response.Body)
+		responceBody.ReadFrom(response.Body) //nolint:all
 		var fromDB structures.Group
-		json.Unmarshal(responceBody.Bytes(), &fromDB)
+		json.Unmarshal(responceBody.Bytes(), &fromDB) //nolint:all
 		require.Equal(t, created.Id, fromDB.Id)
 	})
 }
@@ -281,7 +281,7 @@ func TestRotation(t *testing.T) {
 		require.Equal(t, http.StatusOK, response.StatusCode)
 
 		responseBody := new(bytes.Buffer)
-		responseBody.ReadFrom(response.Body)
+		responseBody.ReadFrom(response.Body) //nolint:all
 		selectedId, _ := strconv.Atoi(responseBody.String())
 		require.Equal(t, banner.Id, selectedId)
 

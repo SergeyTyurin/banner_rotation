@@ -22,7 +22,9 @@ func increaseDisplay(d *databaseImpl, bannerId, slotId, groupId int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	query := `UPDATE "Statistic"
 	SET click_count = click_count + 1
@@ -55,7 +57,9 @@ func (d *databaseImpl) AddToRotation(bannerId, slotId int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	query := `INSERT INTO "Statistic"(banner_id, slot_id, group_id, display_count, click_count)
 	VALUES($1, $2, $3, $4, $5)`
@@ -98,7 +102,9 @@ func (d *databaseImpl) DeleteFromRotation(bannerId, slotId int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	for _, group := range groups {
 		inRotation, err := checkEntityInRotationTx(tx, bannerId, slotId, group.Id)
@@ -187,7 +193,9 @@ func (d *databaseImpl) RegisterTransition(slotId, bannerId, groupId int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	inRotation, err := checkEntityInRotationTx(tx, bannerId, slotId, groupId)
 	if err != nil {

@@ -13,8 +13,8 @@ func TestCreateGroup(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
-	d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+	defer closeConnection()                                       //nolint:all
+	d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 
 	group := structures.Group{Id: 1, Info: "info"}
 	new, err := d.CreateGroup(group)
@@ -30,14 +30,14 @@ func TestGetGroups(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	count := 5
 	t.Run("get all groups", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 		for i := 0; i < count; i++ {
 			group := structures.Group{Info: "info" + strconv.Itoa(i)}
-			d.CreateGroup(group)
+			d.CreateGroup(group) //nolint:all
 		}
 
 		groups, err := d.GetGroups()
@@ -46,10 +46,10 @@ func TestGetGroups(t *testing.T) {
 	})
 
 	t.Run("get groupby id", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 		for i := 0; i < count; i++ {
 			group := structures.Group{Info: "info" + strconv.Itoa(i+1)}
-			d.CreateGroup(group)
+			d.CreateGroup(group) //nolint:all
 		}
 
 		group, err := d.GetGroup(2)
@@ -59,7 +59,7 @@ func TestGetGroups(t *testing.T) {
 	})
 
 	t.Run("get from empty", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 		groups, err := d.GetGroups()
 		require.NoError(t, err)
 		require.Empty(t, groups)
@@ -75,10 +75,10 @@ func TestUpdateGroup(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	t.Run("update non existed group", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 
 		group := structures.Group{Id: 100, Info: "new info"}
 		err := d.UpdateGroup(group)
@@ -86,7 +86,7 @@ func TestUpdateGroup(t *testing.T) {
 	})
 
 	t.Run("update existed group", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 		newGroup, _ := d.CreateGroup(structures.Group{Info: "info"})
 		newGroup.Info = "newInfo"
 		err := d.UpdateGroup(newGroup)
@@ -101,17 +101,17 @@ func TestDeleteGroup(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	t.Run("delete non existed group", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 
 		err := d.DeleteGroup(1)
 		require.ErrorIs(t, err, ErrNotExist)
 	})
 
 	t.Run("delete existed group", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Groups" RESTART IDENTITY CASCADE`) //nolint:all
 		newGroup, _ := d.CreateGroup(structures.Group{Info: "info"})
 		newGroup.Info = "newInfo"
 		err := d.DeleteGroup(newGroup.Id)

@@ -1,6 +1,8 @@
 package database
 
-import "github.com/SergeyTyurin/banner_rotation/structures"
+import (
+	"github.com/SergeyTyurin/banner_rotation/structures"
+)
 
 func (d *databaseImpl) GetGroups() ([]structures.Group, error) {
 	query := `SELECT id, info FROM "Groups"`
@@ -14,7 +16,9 @@ func (d *databaseImpl) GetGroups() ([]structures.Group, error) {
 	for rows.Next() {
 		var id int
 		var info string
-		rows.Scan(&id, &info)
+		if err := rows.Scan(&id, &info); err != nil {
+			return nil, err
+		}
 		groups = append(groups, structures.Group{Id: id, Info: info})
 	}
 	return groups, nil
@@ -42,7 +46,9 @@ func (d *databaseImpl) DeleteGroup(id int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	_, err = tx.Exec(rotationQuery, id)
 	if err != nil {
@@ -71,7 +77,9 @@ func (d *databaseImpl) CreateGroup(entity structures.Group) (structures.Group, e
 	if err != nil {
 		return structures.Group{Id: invalidId}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	row := tx.QueryRow(query, entity.Info)
 	id := invalidId
@@ -97,7 +105,9 @@ func (d *databaseImpl) UpdateGroup(entity structures.Group) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	res, err := tx.Exec(query, entity.Info, entity.Id)
 	if err != nil {

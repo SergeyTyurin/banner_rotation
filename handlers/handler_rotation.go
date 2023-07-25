@@ -28,7 +28,7 @@ func (h *Handlers) AddToRotation(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -54,7 +54,7 @@ func (h *Handlers) DeleteFromRotation(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -81,12 +81,12 @@ func (h *Handlers) RegisterTransition(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	if h.broker != nil {
 		msg := fmt.Sprintf("slot_id=%d, group_id=%d, banner_id=%d", slotId, groupId, bannerId)
-		h.broker.SendRegisterTransitionEvent(msg)
+		_ = h.broker.SendRegisterTransitionEvent(msg)
 	}
 	w.WriteHeader(http.StatusOK)
 }
@@ -111,13 +111,13 @@ func (h *Handlers) SelectFromRotation(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	if h.broker != nil {
 		msg := fmt.Sprintf("slot_id=%d, group_id=%d, banner_id=%d", slotId, groupId, bannerId)
-		h.broker.SendSelectFromRotationEvent(msg)
+		_ = h.broker.SendSelectFromRotationEvent(msg)
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(strconv.Itoa(bannerId)))
+	_, _ = w.Write([]byte(strconv.Itoa(bannerId)))
 }

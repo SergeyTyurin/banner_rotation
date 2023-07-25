@@ -13,8 +13,8 @@ func TestCreateBanner(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
-	d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+	defer closeConnection()                                        //nolint:all
+	d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 
 	banner := structures.Banner{Id: 1, Info: "info"}
 	new, err := d.CreateBanner(banner)
@@ -30,14 +30,14 @@ func TestGetBanners(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	count := 5
 	t.Run("get all banners", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 		for i := 0; i < count; i++ {
 			banner := structures.Banner{Info: "info" + strconv.Itoa(i)}
-			d.CreateBanner(banner)
+			d.CreateBanner(banner) //nolint:all
 		}
 
 		banners, err := d.GetBanners()
@@ -46,10 +46,10 @@ func TestGetBanners(t *testing.T) {
 	})
 
 	t.Run("get banner by id", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 		for i := 0; i < count; i++ {
 			banner := structures.Banner{Info: "info" + strconv.Itoa(i+1)}
-			d.CreateBanner(banner)
+			d.CreateBanner(banner) //nolint:all
 		}
 
 		banner, err := d.GetBanner(2)
@@ -59,7 +59,7 @@ func TestGetBanners(t *testing.T) {
 	})
 
 	t.Run("get from empty", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 		banners, err := d.GetBanners()
 		require.NoError(t, err)
 		require.Empty(t, banners)
@@ -75,10 +75,10 @@ func TestUpdateBanner(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() // nolint:all
 
 	t.Run("update non existed banner", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 
 		banner := structures.Banner{Id: 100, Info: "new info"}
 		err := d.UpdateBanner(banner)
@@ -86,7 +86,7 @@ func TestUpdateBanner(t *testing.T) {
 	})
 
 	t.Run("update existed banner", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 		newBanner, err := d.CreateBanner(structures.Banner{Info: "info"})
 		require.NoError(t, err)
 		newBanner.Info = "newInfo"
@@ -102,17 +102,17 @@ func TestDeleteBanner(t *testing.T) {
 	d := databaseImpl{nil}
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	t.Run("delete non existed banner", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) //nolint:all
 
 		err := d.DeleteBanner(1)
 		require.ErrorIs(t, err, ErrNotExist)
 	})
 
 	t.Run("delete existed banner", func(t *testing.T) {
-		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`)
+		d.db.Exec(`TRUNCATE TABLE "Banners" RESTART IDENTITY CASCADE`) // nolint:all
 		newBanner, _ := d.CreateBanner(structures.Banner{Info: "info"})
 		newBanner.Info = "newInfo"
 		err := d.DeleteBanner(newBanner.Id)

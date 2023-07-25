@@ -30,7 +30,7 @@ func NewRouter(db database.Database, broker message_broker.MessageBroker) Router
 			http.NotFound(w, r)
 			return
 		}
-		w.Write([]byte("Rotation service is running"))
+		_, _ = w.Write([]byte("Rotation service is running"))
 	})
 
 	r.handlers = handlers.NewHandlers(db, broker)

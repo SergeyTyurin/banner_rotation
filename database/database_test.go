@@ -13,7 +13,7 @@ func TestConnectDatabase(t *testing.T) {
 		closeConnection, err := NewDatabase().Connect(config)
 		require.NoError(t, err)
 		require.NoError(t, closeConnection())
-		defer closeConnection()
+		defer closeConnection() //nolint:all
 	})
 	t.Run("empty connection", func(t *testing.T) {
 		closeConnection, err := NewDatabase().Connect(nil)
@@ -30,6 +30,6 @@ func TestCloseConnection(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, closeConnection)
 		require.Equal(t, d.db.Stats().OpenConnections, 1)
-		defer closeConnection()
+		defer closeConnection() //nolint:all
 	}
 }

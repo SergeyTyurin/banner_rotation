@@ -72,7 +72,9 @@ func (di *databaseImpl) Connect(config configs.DBConnectionConfig) (func() error
 	}
 
 	if err := di.db.Ping(); err != nil {
-		closeConnect()
+		if err := closeConnect(); err != nil {
+			return nil, err
+		}
 		return nil, err
 	}
 	return closeConnect, nil

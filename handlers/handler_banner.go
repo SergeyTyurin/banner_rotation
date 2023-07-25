@@ -30,12 +30,14 @@ func (h *Handlers) GetBanner(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
+
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	resp, _ := json.Marshal(banner)
-	w.Write(resp)
+	_, _ = w.Write(resp)
+
 }
 
 func (h *Handlers) CreateBanner(w http.ResponseWriter, r *http.Request) {
@@ -55,12 +57,12 @@ func (h *Handlers) CreateBanner(w http.ResponseWriter, r *http.Request) {
 	createdBanner, err := h.db.CreateBanner(banner)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	resp, _ := json.Marshal(createdBanner)
 	w.WriteHeader(http.StatusCreated)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 }
 
 func (h *Handlers) UpdateBanner(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +86,7 @@ func (h *Handlers) UpdateBanner(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -107,7 +109,7 @@ func (h *Handlers) DeleteBanner(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

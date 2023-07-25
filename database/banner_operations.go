@@ -1,6 +1,8 @@
 package database
 
-import "github.com/SergeyTyurin/banner_rotation/structures"
+import (
+	"github.com/SergeyTyurin/banner_rotation/structures"
+)
 
 func (d *databaseImpl) GetBanners() ([]structures.Banner, error) {
 	query := `SELECT id, info FROM "Banners"`
@@ -14,7 +16,10 @@ func (d *databaseImpl) GetBanners() ([]structures.Banner, error) {
 	for rows.Next() {
 		var id int
 		var info string
-		rows.Scan(&id, &info)
+		err := rows.Scan(&id, &info)
+		if err != nil {
+			return nil, err
+		}
 		banners = append(banners, structures.Banner{Id: id, Info: info})
 	}
 	return banners, nil
@@ -42,7 +47,9 @@ func (d *databaseImpl) DeleteBanner(id int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	_, err = tx.Exec(rotationQuery, id)
 	if err != nil {
@@ -71,7 +78,9 @@ func (d *databaseImpl) CreateBanner(entity structures.Banner) (structures.Banner
 	if err != nil {
 		return structures.Banner{Id: invalidId}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	row := tx.QueryRow(query, entity.Info)
 	id := invalidId
@@ -97,7 +106,9 @@ func (d *databaseImpl) UpdateBanner(entity structures.Banner) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	res, err := tx.Exec(query, entity.Info, entity.Id)
 	if err != nil {

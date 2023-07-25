@@ -14,7 +14,9 @@ func (d *databaseImpl) GetSlots() ([]structures.Slot, error) {
 	for rows.Next() {
 		var id int
 		var info string
-		rows.Scan(&id, &info)
+		if err := rows.Scan(&id, &info); err != nil {
+			return nil, err
+		}
 		slots = append(slots, structures.Slot{Id: id, Info: info})
 	}
 	return slots, nil
@@ -42,7 +44,9 @@ func (d *databaseImpl) DeleteSlot(id int) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	_, err = tx.Exec(rotationQuery, id)
 	if err != nil {
@@ -71,7 +75,9 @@ func (d *databaseImpl) CreateSlot(entity structures.Slot) (structures.Slot, erro
 	if err != nil {
 		return structures.Slot{Id: invalidId}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	row := tx.QueryRow(query, entity.Info)
 	id := invalidId
@@ -96,7 +102,9 @@ func (d *databaseImpl) UpdateSlot(entity structures.Slot) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	res, err := tx.Exec(query, entity.Info, entity.Id)
 	if err != nil {

@@ -28,12 +28,12 @@ func (h *Handlers) GetGroup(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	resp, _ := json.Marshal(group)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 }
 
 func (h *Handlers) CreateGroup(w http.ResponseWriter, r *http.Request) {
@@ -53,12 +53,12 @@ func (h *Handlers) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	createdGroup, err := h.db.CreateGroup(group)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	resp, _ := json.Marshal(createdGroup)
 	w.WriteHeader(http.StatusCreated)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 }
 
 func (h *Handlers) UpdateGroup(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +82,7 @@ func (h *Handlers) UpdateGroup(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -105,7 +105,7 @@ func (h *Handlers) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)

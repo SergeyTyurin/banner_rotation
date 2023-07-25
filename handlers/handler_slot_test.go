@@ -19,7 +19,7 @@ func TestBadRequestSlot(t *testing.T) {
 	d := database.NewDatabase()
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	h := Handlers{d, nil}
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "/slot")
@@ -71,7 +71,7 @@ func TestNonExistsSlot(t *testing.T) {
 	d := database.NewDatabase()
 	config, _ := configs.GetDBConnectionConfig("../config/test/test_connection_config.yaml")
 	closeConnection, _ := d.Connect(config)
-	defer closeConnection()
+	defer closeConnection() //nolint:all
 
 	h := Handlers{d, nil}
 	url := fmt.Sprintf("http://%s:%d/%s", config.Host(), config.Port(), "/slot")

@@ -28,12 +28,12 @@ func (h *Handlers) GetSlot(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	resp, _ := json.Marshal(slot)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 }
 
 func (h *Handlers) CreateSlot(w http.ResponseWriter, r *http.Request) {
@@ -53,12 +53,12 @@ func (h *Handlers) CreateSlot(w http.ResponseWriter, r *http.Request) {
 	createdSlot, err := h.db.CreateSlot(slot)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	resp, _ := json.Marshal(createdSlot)
 	w.WriteHeader(http.StatusCreated)
-	w.Write(resp)
+	_, _ = w.Write(resp)
 }
 
 func (h *Handlers) UpdateSlot(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +82,7 @@ func (h *Handlers) UpdateSlot(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -105,7 +105,7 @@ func (h *Handlers) DeleteSlot(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		w.Write([]byte(err.Error()))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
