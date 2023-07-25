@@ -9,8 +9,8 @@ env:
   GO111MODULE: "on"
   CGO_ENABLED: 1
 
-jobs:
-  lint:
+jobs:        
+  tests_by_makefile:
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
@@ -29,9 +29,6 @@ jobs:
         with:
           version: latest
           
-  tests_by_makefile:
-    runs-on: ubuntu-latest
-    steps:
       - name: make lint
         run: make lint
         working-directory: /home/runner/work/banner_rotation/banner_rotation
