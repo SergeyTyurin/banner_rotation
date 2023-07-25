@@ -22,7 +22,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer closeFunc()
+	defer func() {
+		if err := closeFunc(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	msgConfig, err := configs.GetMessageBrokerConfig("config/connection_config.yaml")
 	if err != nil {

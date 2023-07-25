@@ -19,7 +19,6 @@ services:
       - "5432:5432"
     networks:
         - app_net
-        - postgres_go_net
 
   amqp:
     image: rabbitmq:management
@@ -37,7 +36,6 @@ services:
       - "15672:15672"
     networks:
       - app_net
-      - rabbitmq_go_net
 
   rotation:
     build:
@@ -58,15 +56,15 @@ services:
       - "8081:8081"
     networks:
         - app_net
-        - rotation_go_net
 
 networks:
-  rabbitmq_go_net:
-    driver: bridge
-  postgres_go_net:
-    driver: bridge
-  rotation_go_net:
-    driver: bridge
+  # rabbitmq_go_net:
+  #   driver: bridge
+  # postgres_go_net:
+  #   driver: bridge
+  # rotation_go_net:
+  #   driver: bridge
   app_net:
     name: shared_net
+    driver: bridge
   
