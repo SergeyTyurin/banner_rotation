@@ -3,7 +3,6 @@ module github.com/SergeyTyurin/banner-rotation
 go 1.20
 
 require (
-	github.com/SergeyTyurin/banner-rotation v0.0.0-20230724091955-0dc65ad26afa
 	github.com/jackc/pgx/v5 v5.4.2
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/stretchr/testify v1.8.4

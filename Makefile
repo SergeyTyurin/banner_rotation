@@ -14,7 +14,7 @@ build:
 test:
 	go clean -testcache;
 	go test -v -race -count 100 ./configs
-	go test -v -race -count 100 ./banner_selector
+	go test -v -race -count 100 ./bannerselector
 	go test -v -race -count 100 ./router
 integration_test:
 	go clean -testcache;
@@ -25,8 +25,8 @@ integration_test:
 	docker compose up -d && \
 	go test -v ./handlers && \
 	go test -v ./database && \
-	go test -v ./message_broker && \
-	go test -v ./integration_tests && \
+	go test -v ./messagebroker && \
+	go test -v ./integrationtests && \
 	docker compose down --volumes
 run:
 	export DB_USER=${DATABASE_USER} && \
