@@ -1,1 +1,65 @@
-{"payload":{"allShortcutsEnabled":false,"fileTree":{"":{"items":[{"name":"examples","path":"examples","contentType":"directory"},{"name":".gitignore","path":".gitignore","contentType":"file"},{"name":".golangci.yml","path":".golangci.yml","contentType":"file"},{"name":"01-anti-bruteforce.md","path":"01-anti-bruteforce.md","contentType":"file"},{"name":"02-banners-rotation.md","path":"02-banners-rotation.md","contentType":"file"},{"name":"03-image-previewer.md","path":"03-image-previewer.md","contentType":"file"},{"name":"04-sql-migrator.md","path":"04-sql-migrator.md","contentType":"file"},{"name":"05-system-stats-daemon.md","path":"05-system-stats-daemon.md","contentType":"file"},{"name":"README.md","path":"README.md","contentType":"file"}],"totalCount":9}},"fileTreeProcessingTime":2.41724,"foldersToFetch":[],"reducedMotionEnabled":null,"repo":{"id":243361006,"defaultBranch":"master","name":"final_project","ownerLogin":"OtusGolang","currentUserCanPush":false,"isFork":false,"isEmpty":false,"createdAt":"2020-02-26T20:39:34.000Z","ownerAvatar":"https://avatars.githubusercontent.com/u/61183740?v=4","public":true,"private":false,"isOrgOwned":true},"refInfo":{"name":"master","listCacheKey":"v0:1585478954.0","canEdit":false,"refType":"branch","currentOid":"9078c05172d4f4a26f41f9da00a73c6a44cb06aa"},"path":".golangci.yml","currentUser":null,"blob":{"rawLines":["run:","  tests: true","","linters-settings:","  funlen:","    lines: 150","    statements: 80","","linters:","  disable-all: true","  enable:","    - asciicheck","    - bodyclose","    - deadcode","    - depguard","    - dogsled","    - dupl","    - durationcheck","    - errorlint","    - exhaustive","    - exportloopref","    - funlen","    - gci","    - gocognit","    - goconst","    - gocritic","    - gocyclo","    - godot","    - gofmt","    - gofumpt","    - goheader","    - gomoddirectives","    - gomodguard","    - goprintffuncname","    - gosec","    - gosimple","    - govet","    - ifshort","    - importas","    - ineffassign","    - lll","    - makezero","    - misspell","    - nestif","    - nilerr","    - noctx","    - nolintlint","    - prealloc","    - predeclared","    - revive","    - rowserrcheck","    - sqlclosecheck","    - staticcheck","    - structcheck","    - stylecheck","    - tagliatelle","    - thelper","    - tparallel","    - typecheck","    - unconvert","    - unparam","    - unused","    - varcheck","    - wastedassign","    - whitespace"],"stylingDirectives":[[{"start":0,"end":3,"cssClass":"pl-ent"}],[{"start":2,"end":7,"cssClass":"pl-ent"},{"start":9,"end":13,"cssClass":"pl-c1"}],[],[{"start":0,"end":16,"cssClass":"pl-ent"}],[{"start":2,"end":8,"cssClass":"pl-ent"}],[{"start":4,"end":9,"cssClass":"pl-ent"},{"start":11,"end":14,"cssClass":"pl-c1"}],[{"start":4,"end":14,"cssClass":"pl-ent"},{"start":16,"end":18,"cssClass":"pl-c1"}],[],[{"start":0,"end":7,"cssClass":"pl-ent"}],[{"start":2,"end":13,"cssClass":"pl-ent"},{"start":15,"end":19,"cssClass":"pl-c1"}],[{"start":2,"end":8,"cssClass":"pl-ent"}],[{"start":6,"end":16,"cssClass":"pl-s"}],[{"start":6,"end":15,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":10,"cssClass":"pl-s"}],[{"start":6,"end":19,"cssClass":"pl-s"}],[{"start":6,"end":15,"cssClass":"pl-s"}],[{"start":6,"end":16,"cssClass":"pl-s"}],[{"start":6,"end":19,"cssClass":"pl-s"}],[{"start":6,"end":12,"cssClass":"pl-s"}],[{"start":6,"end":9,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":11,"cssClass":"pl-s"}],[{"start":6,"end":11,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":21,"cssClass":"pl-s"}],[{"start":6,"end":16,"cssClass":"pl-s"}],[{"start":6,"end":22,"cssClass":"pl-s"}],[{"start":6,"end":11,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":11,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":17,"cssClass":"pl-s"}],[{"start":6,"end":9,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":12,"cssClass":"pl-s"}],[{"start":6,"end":12,"cssClass":"pl-s"}],[{"start":6,"end":11,"cssClass":"pl-s"}],[{"start":6,"end":16,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":17,"cssClass":"pl-s"}],[{"start":6,"end":12,"cssClass":"pl-s"}],[{"start":6,"end":18,"cssClass":"pl-s"}],[{"start":6,"end":19,"cssClass":"pl-s"}],[{"start":6,"end":17,"cssClass":"pl-s"}],[{"start":6,"end":17,"cssClass":"pl-s"}],[{"start":6,"end":16,"cssClass":"pl-s"}],[{"start":6,"end":17,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":15,"cssClass":"pl-s"}],[{"start":6,"end":15,"cssClass":"pl-s"}],[{"start":6,"end":15,"cssClass":"pl-s"}],[{"start":6,"end":13,"cssClass":"pl-s"}],[{"start":6,"end":12,"cssClass":"pl-s"}],[{"start":6,"end":14,"cssClass":"pl-s"}],[{"start":6,"end":18,"cssClass":"pl-s"}],[{"start":6,"end":16,"cssClass":"pl-s"}]],"csv":null,"csvError":null,"dependabotInfo":{"showConfigurationBanner":false,"configFilePath":null,"networkDependabotPath":"/OtusGolang/final_project/network/updates","dismissConfigurationNoticePath":"/settings/dismiss-notice/dependabot_configuration_notice","configurationNoticeDismissed":null,"repoAlertsPath":"/OtusGolang/final_project/security/dependabot","repoSecurityAndAnalysisPath":"/OtusGolang/final_project/settings/security_analysis","repoOwnerIsOrg":true,"currentUserCanAdminRepo":false},"displayName":".golangci.yml","displayUrl":"https://github.com/OtusGolang/final_project/blob/master/.golangci.yml?raw=true","headerInfo":{"blobSize":"956 Bytes","deleteInfo":{"deletePath":null,"deleteTooltip":"You must be signed in to make or propose changes"},"editInfo":{"editTooltip":"You must be signed in to make or propose changes"},"ghDesktopPath":"https://desktop.github.com","gitLfsPath":null,"onBranch":true,"shortPath":"53aa7d7","siteNavLoginPath":"/login?return_to=https%3A%2F%2Fgithub.com%2FOtusGolang%2Ffinal_project%2Fblob%2Fmaster%2F.golangci.yml","isCSV":false,"isRichtext":false,"toc":null,"lineInfo":{"truncatedLoc":"65","truncatedSloc":"63"},"mode":"file"},"image":false,"isCodeownersFile":null,"isValidLegacyIssueTemplate":false,"issueTemplateHelpUrl":"https://docs.github.com/articles/about-issue-and-pull-request-templates","issueTemplate":null,"discussionTemplate":null,"language":"YAML","large":false,"loggedIn":false,"newDiscussionPath":"/OtusGolang/final_project/discussions/new","newIssuePath":"/OtusGolang/final_project/issues/new","planSupportInfo":{"repoIsFork":null,"repoOwnedByCurrentUser":null,"requestFullPath":"/OtusGolang/final_project/blob/master/.golangci.yml","showFreeOrgGatedFeatureMessage":null,"showPlanSupportBanner":null,"upgradeDataAttributes":null,"upgradePath":null},"publishBannersInfo":{"dismissActionNoticePath":"/settings/dismiss-notice/publish_action_from_dockerfile","dismissStackNoticePath":"/settings/dismiss-notice/publish_stack_from_file","releasePath":"/OtusGolang/final_project/releases/new?marketplace=true","showPublishActionBanner":false,"showPublishStackBanner":false},"renderImageOrRaw":false,"richText":null,"renderedFileInfo":null,"tabSize":8,"topBannersInfo":{"overridingGlobalFundingFile":false,"globalPreferredFundingPath":null,"repoOwner":"OtusGolang","repoName":"final_project","showInvalidCitationWarning":false,"citationHelpUrl":"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-citation-files","showDependabotConfigurationBanner":false,"actionsOnboardingTip":null},"truncated":false,"viewable":true,"workflowRedirectUrl":null,"symbols":{"timedOut":false,"notAnalyzed":true,"symbols":[]}},"copilotUserAccess":null,"csrf_tokens":{"/OtusGolang/final_project/branches":{"post":"kCpAvlzn_zfF8E02epDMytvI9hzFguMOB8B-6uT8P-a--a_ygJXCi3HLiWo9h-sIKOenYa5-prTayHxwUsbZMQ"}}},"title":"final_project/.golangci.yml at master · OtusGolang/final_project","locale":"en"}
+run:
+  tests: true
+
+linters-settings:
+  funlen:
+    lines: 150
+    statements: 80
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - durationcheck
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - funlen
+    - gci
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofmt
+    - gofumpt
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ifshort
+    - importas
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - nestif
+    - nilerr
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - tagliatelle
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - wastedassign
+    - whitespace
