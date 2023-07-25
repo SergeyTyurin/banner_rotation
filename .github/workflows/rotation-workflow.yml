@@ -23,7 +23,7 @@ jobs:
 
       - name: make lint
         run: make lint
-        working-directory: /home/runner/work/banner_rotation
+        working-directory: /home/runner/work/banner_rotation/banner_rotation
 
       - name: make build
         run: make build
