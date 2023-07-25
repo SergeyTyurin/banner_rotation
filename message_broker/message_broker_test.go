@@ -16,4 +16,12 @@ func TestSendMessages(t *testing.T) {
 
 	require.NoError(t, m.SendRegisterTransitionEvent("test regsiter"))
 	require.NoError(t, m.SendSelectFromRotationEvent("test select"))
+
+	msg, err := m.GetRegisterTransitionEvent()
+	require.NoError(t, err)
+	require.Equal(t, msg, "test regsiter")
+
+	msg, err = m.GetSelectFromRotationEvent()
+	require.NoError(t, err)
+	require.Equal(t, msg, "test select")
 }
