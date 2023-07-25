@@ -14,7 +14,7 @@ linters:
     - deadcode
     # - depguard
     - dogsled
-    - dupl
+    # - dupl
     - durationcheck
     - errorlint
     - exhaustive
