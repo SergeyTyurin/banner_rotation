@@ -1,4 +1,4 @@
-[![CI](https://github.com/SergeyTyurin/banner-rotation/actions/workflows/rotation-workflow.yml/badge.svg)](https://github.com/SergeyTyurin/banner-rotation/actions/workflows/rotation-workflow.yml)
+[![CI](https://github.com/SergeyTyurin/banner_rotation/actions/workflows/rotation-workflow.yml/badge.svg)](https://github.com/SergeyTyurin/banner_rotation/actions/workflows/rotation-workflow.yml)
 
 
 Сервис ротации баннеров.
